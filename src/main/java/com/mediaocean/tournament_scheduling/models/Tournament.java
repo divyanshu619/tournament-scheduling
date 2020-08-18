@@ -11,7 +11,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -24,7 +23,7 @@ public class Tournament extends BaseEntity {
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id")
     )
-    private Set<Team> teamSet;
+    private List<Team> teamList;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "tournament_id")
     private List<KabaddiMatch> kabaddiMatchList;

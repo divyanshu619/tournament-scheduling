@@ -18,7 +18,7 @@ public class Team extends BaseEntity {
     private String teamName;
     @Column(nullable = false)
     private String homeLocation;
-    @ManyToMany(mappedBy = "teamSet")
+    @ManyToMany(mappedBy = "teamList")
     private Set<Tournament> tournamentSet;
 
     public Team(String teamName, String homeLocation) {
