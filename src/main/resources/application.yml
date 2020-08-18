@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: tournament_scheduling
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kabaddi_scheduler
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob.non_contextual_creation: true
+        hibernate:
+          default_schema: kabaddi_scheduler
