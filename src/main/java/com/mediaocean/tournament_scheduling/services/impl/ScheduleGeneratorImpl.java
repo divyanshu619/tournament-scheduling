@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Setter
-@Getter
 public class ScheduleGeneratorImpl implements ScheduleGenerator {
 
     private int maxMatchesInDay = 2;
