@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  inventory-update:
+    image: mediaocean/tournament-scheduling
+    ports:
+      - "${SERVER_PORT}:8080"
+    network_mode: ${NETWORK_MODE}
