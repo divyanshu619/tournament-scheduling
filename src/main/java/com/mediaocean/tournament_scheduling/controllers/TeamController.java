@@ -33,9 +33,6 @@ public class TeamController {
             log.error("Error occurred while saving teams : ", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error occurred while saving teams : " + e.getMessage());
-        } catch (Exception e) {
-            log.error("Error occurred while saving teams : ", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while saving teams");
         }
     }
 }
