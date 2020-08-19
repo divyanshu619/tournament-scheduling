@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,7 @@ public class Tournament extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "team_id")
     )
     private List<Team> teamList;
+    private ZonedDateTime startTime;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "tournament_id")
     private List<KabaddiMatch> kabaddiMatchList;
