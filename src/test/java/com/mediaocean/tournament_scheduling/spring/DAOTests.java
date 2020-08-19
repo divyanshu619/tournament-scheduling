@@ -57,7 +57,7 @@ public class DAOTests {
     @Test
     public void scheduleGenTest() {
         List<Team> teamList = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             teamList.add(new Team(String.valueOf(i + 1), "Home " + (i + 1)));
         }
 

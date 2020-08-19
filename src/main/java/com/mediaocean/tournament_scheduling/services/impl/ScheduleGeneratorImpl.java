@@ -23,55 +23,69 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 
     @Override
     public List<KabaddiMatch> generateSchedule(List<Team> teamList, ZonedDateTime startingDate) {
-
-
-        int numTeams = teamList.size();
-        int[] teamNumbers;
-        if (teamList.size() % 2 == 0) {
-            teamNumbers = new int[numTeams - 1];
-        } else {
-            teamNumbers = new int[numTeams];
-        }
-
-        int numDays = (numTeams - 1);
-        int halfSize = numTeams / 2;
-        for (int i = 2; i <= numTeams; i++) {
-            teamNumbers[i - 2] = i;
-        }
-
-        int teamsSize = teamNumbers.length;
-
         List<KabaddiMatch> kabaddiMatches = new ArrayList<>();
+        boolean dummyTeam = false;
+        int numTeams = teamList.size();
+        if (numTeams % 2 != 0) {
+            numTeams++;
+            dummyTeam = true;
+        }
 
-        for (int day = 0; day < numDays; day++) {
-            log.info("Day" + (day + 1));
+        int[][] teamIndexes = new int[2][numTeams / 2];
+        fillTeamIndexes(teamIndexes, numTeams, dummyTeam);
 
-            int teamIdx = day % teamsSize;
 
-            log.info(teamNumbers[teamIdx] + " vs 1");
-//            if(teamNumbers[teamIdx] != 0) {
-            KabaddiMatch kabaddiMatchWithTeam1 = new KabaddiMatch();
-            kabaddiMatchWithTeam1.setTeamA(teamList.get(0));
-            kabaddiMatchWithTeam1.setTeamB(teamList.get(teamNumbers[teamIdx] - 1));
-            kabaddiMatchWithTeam1.setLocation(teamList.get(0).getHomeLocation());
-            kabaddiMatches.add(kabaddiMatchWithTeam1);
-//            }
-
-            for (int idx = 1; idx < halfSize; idx++) {
-                int firstTeam = (day + idx) % teamsSize;
-                int secondTeam = (day + teamsSize - idx) % teamsSize;
-                log.info(teamNumbers[firstTeam] + " vs " + teamNumbers[secondTeam]);
-//                if(teamNumbers[firstTeam] != 0 && teamNumbers[secondTeam] != 0) {
-                KabaddiMatch kabaddiMatch = new KabaddiMatch();
-                kabaddiMatch.setTeamA(teamList.get(teamNumbers[firstTeam] - 1));
-                kabaddiMatch.setTeamB(teamList.get(teamNumbers[secondTeam] - 1));
-                kabaddiMatch.setLocation(teamList.get(teamNumbers[firstTeam] - 1).getHomeLocation());
-                kabaddiMatches.add(kabaddiMatch);
-//                }
-            }
+        for (int i = 0; i < numTeams - 1; i++) {
+            addKabaddiMatch(teamIndexes, teamList, numTeams, kabaddiMatches);
+            rotate(teamIndexes, numTeams);
         }
         kabaddiMatches.addAll(generateAwayMatches(kabaddiMatches));
         return addDatesToSchedule(kabaddiMatches, startingDate);
+    }
+
+    private void fillTeamIndexes(int[][] teamIndexes, int numberOfTeams, boolean dummyTeam) {
+        int half = numberOfTeams / 2;
+        for (int index = 0; index < half; index++) {
+            teamIndexes[0][index] = index + 1;
+        }
+
+        for (int i = half - 1, j = half + 1; i >= 0; i--, j++) {
+            if (dummyTeam && i == 0) {
+                teamIndexes[1][i] = 0;
+            } else {
+                teamIndexes[1][i] = j;
+            }
+        }
+    }
+
+    private void rotate(int[][] teamIndexes, int numberOfTeams) {
+        int half = numberOfTeams / 2;
+        int elementToMoveFromRow1 = teamIndexes[0][half - 1];
+        int elementToMoveFromRow2 = teamIndexes[1][0];
+        // Rotate row 1
+        for (int i = 1; i < half - 1; i++) {
+            teamIndexes[0][i + 1] = teamIndexes[0][i];
+        }
+        // Rotate row 2
+        for (int i = 1; i < half; i++) {
+            teamIndexes[1][i - 1] = teamIndexes[1][i];
+        }
+        // Insert the value to be moved
+        teamIndexes[0][1] = elementToMoveFromRow2;
+        teamIndexes[1][half - 1] = elementToMoveFromRow1;
+    }
+
+    private void addKabaddiMatch(int[][] teamIndexes, List<Team> teamList, int numTeams,
+                                 List<KabaddiMatch> kabaddiMatches) {
+        for (int i = 0; i < numTeams / 2; i++) {
+            if (teamIndexes[0][i] != 0 && teamIndexes[1][i] != 0) {
+                KabaddiMatch kabaddiMatch = new KabaddiMatch();
+                kabaddiMatch.setTeamA(teamList.get(teamIndexes[0][i] - 1));
+                kabaddiMatch.setTeamB(teamList.get(teamIndexes[1][i] - 1));
+                kabaddiMatch.setLocation(teamList.get(teamIndexes[0][i] - 1).getHomeLocation());
+                kabaddiMatches.add(kabaddiMatch);
+            }
+        }
     }
 
     private List<KabaddiMatch> generateAwayMatches(List<KabaddiMatch> homeMatches) {
